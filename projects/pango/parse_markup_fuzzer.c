@@ -1,9 +1,8 @@
+#include <glib.h>
+#include <pango/pangocairo.h>
 #include <stdint.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "glib/glib/glib.h"
-#include "pango/pango/pangocairo.h"
 
 int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   GError *error = NULL;
