@@ -16,9 +16,26 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER eustas@chromium.org
-RUN apt-get update && apt-get install -y cmake libtool make
+RUN apt-get update && apt-get install -y \
+			cmake \
+			libffi-dev \
+			libfribidi-dev \
+			libglib2.0-dev \
+			libmount-dev \
+			libpcre2-dev \
+			libthai-dev \
+			libxml2-utils \
+			mount \
+			python3-pip \
+			autoconf automake libtool pkg-config ragel \
+			libfontconfig1-dev \
+			libfreetype6-dev libglib2.0-dev libcairo2-dev \
+			gobject-introspection \
+			libgirepository1.0-dev 
 
+RUN pip3 install meson cffi ninja
+
+RUN git clone --depth 1 https://github.com/harfbuzz/harfbuzz
 RUN git clone --depth 1 https://gitlab.gnome.org/GNOME/pango
-WORKDIR brotli
 COPY parse_markup_fuzzer.c $SRC/
 COPY build.sh $SRC/
