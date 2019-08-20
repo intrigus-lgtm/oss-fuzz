@@ -1,0 +1,11 @@
+homepage: "https://pango.gnome.org"
+primary_contact: "matthias.clasen@gmail.com"
+fuzzing_engines:
+  - libfuzzer
+  - afl
+  - dataflow
+sanitizers:
+  - address
+  - dataflow
+  - memory
+  - undefined
