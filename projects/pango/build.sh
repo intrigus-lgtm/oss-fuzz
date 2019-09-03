@@ -6,7 +6,7 @@ export ASAN_OPTIONS=detect_leaks=0
 # Build a recent version of harbfuzz
 cd harfbuzz
 ./autogen.sh 
-./configure --with-freetype=yes --with-gobject=yes
+./configure --with-freetype=yes --with-gobject=yes --enable-static --disable-shared
 make
 make install
 cd -
@@ -20,7 +20,7 @@ mkdir -p $build
 
 sed -i "/'-Werror=implicit-fallthrough',/d" meson.build
 
-CFLAGS="${CFLAGS} -Wno-implicit-fallthrough" meson $build \
+CFLAGS="${CFLAGS} -Wno-implicit-fallthrough" meson --buildtype=plain --default-library static $build \
   -Db_lundef=false  \
   -Dgtk_doc=false \
   -Dinstall-tests=false \
@@ -28,7 +28,7 @@ CFLAGS="${CFLAGS} -Wno-implicit-fallthrough" meson $build \
 
 
 ninja -C $build 
-ninja -C $build install
+# ninja -C $build install
 
 export GLIB_CFLAGS="$(pkg-config --static --cflags glib-2.0)"
 export HB_CFLAGS="$(pkg-config --static --cflags harfbuzz)"
