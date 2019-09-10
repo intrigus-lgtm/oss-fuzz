@@ -25,7 +25,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" \
     -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
     -Wno-dev $SRC/jsoncpp/
-make
 make install "-j$(nproc)"
 
 # json_styled_writer_fuzzer
