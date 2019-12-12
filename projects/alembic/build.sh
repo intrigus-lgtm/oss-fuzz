@@ -18,13 +18,18 @@
 # build project
 mkdir build
 cd build
-cmake -DILMBASE_INCLUDE_DIR=/usr/include/OpenEXR2 -DILMBASE_ROOT=/usr/lib64/OpenEXR2 ..
-cd ..
+cmake .. -DALEMBIC_SHARED_LIBS=OFF \
 
+make -j2
+make install
+
+find . -name "*.a"
 ls
 
 # build fuzzers
-# e.g.
-# $CXX $CXXFLAGS -std=c++11 -Iinclude \
-#     /path/to/name_of_fuzzer.cc -o $OUT/name_of_fuzzer \
-#     $LIB_FUZZING_ENGINE /path/to/library.a
+for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
+  fuzz_basename=$(basename -s .cc $fuzzers)
+  $CXX $CXXFLAGS -std=c++11 -I. -Ilib \
+  $fuzzers $LIB_FUZZING_ENGINE ./lib/Alembic/libAlembic.a \
+  -o $OUT/$fuzz_basename
+done

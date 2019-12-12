@@ -16,7 +16,7 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER miller.lucas@gmail.com
-RUN apt-get update && apt-get install -y cmake libtool make python
+RUN apt-get update && apt-get install -y build-essential openexr openexr-viewers libopenexr-dev libilmbase-dev libfl-dev python cmake make
 RUN git clone --depth 1 https://github.com/alembic/alembic alembic
 WORKDIR alembic
-COPY build.sh $SRC/
+COPY build.sh alembic_fuzzer.cc *.h $SRC/
