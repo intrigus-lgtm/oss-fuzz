@@ -15,9 +15,13 @@
 #
 ################################################################################
 
-# build fuzzers
 for f in $(find $SRC -name '*_fuzzer.cpp'); do
     b=$(basename -s .cpp $f)
+<<<<<<< HEAD
     $CXX $CXXFLAGS -std=c++11 easywsclient.cpp -I. \
     $f -o $OUT/$b $LIB_FUZZING_ENGINE
+=======
+    $CXX $CXXFLAGS -std=c++11 -g easywsclient.cpp -I. \
+        $f -o $OUT/$b $LIB_FUZZING_ENGINE
+>>>>>>> refs/remotes/origin/add_ew
 done
