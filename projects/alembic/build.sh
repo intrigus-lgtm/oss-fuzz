@@ -18,10 +18,9 @@
 # build project
 mkdir build
 cd build
-cmake .. -DALEMBIC_SHARED_LIBS=OFF \
+cmake .. -DALEMBIC_SHARED_LIBS=OFF
 
-make -j2
-make install
+make -j2 install
 
 find . -name "*.a"
 ls

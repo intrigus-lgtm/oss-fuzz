@@ -16,7 +16,29 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER miller.lucas@gmail.com
-RUN apt-get update && apt-get install -y build-essential openexr openexr-viewers libopenexr-dev libilmbase-dev libfl-dev python cmake make
+RUN apt-get update && apt-get install -y build-essential python cmake make automake libtool curl
+# OpenEXR
+ARG OPENEXR_ROOT=/opt/openexr
+ARG OPENEXR_VER=2.3.0
+WORKDIR ${OPENEXR_ROOT}
+RUN curl -O -L https://github.com/openexr/openexr/releases/download/v${OPENEXR_ROOT}/${OPENEXR_ROOT}.tar.gz && \
+    tar -xvzf openexr-${OPENEXR_VER}.tar.gz && \
+    cd openexr-${OPENEXR_VER} && \
+    # enable gcc 7
+    source /opt/rh/devtoolset-7/enable && \
+    # IlmBase
+    cd IlmBase && \
+    ./bootstrap && \
+    ./configure && \
+    make && \
+    make install && \
+    # OpenEXR
+    cd ../OpenEXR && \
+    ./bootstrap && \
+    ./configure && \
+    make && \
+    make install
+RUN rm -rf ${OPENEXR_ROOT}
 RUN git clone --depth 1 https://github.com/alembic/alembic alembic
 WORKDIR alembic
 COPY build.sh alembic_fuzzer.cc *.h $SRC/
