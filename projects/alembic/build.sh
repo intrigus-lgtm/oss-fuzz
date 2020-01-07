@@ -18,12 +18,11 @@
 # build project
 mkdir build
 cd build
-cmake .. -DALEMBIC_SHARED_LIBS=OFF
+cmake .. -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR=/usr/include/OpenEXR2 -DILMBASE_ROOT=/usr/lib64/OpenEXR2
 
-make -j2 install
-
-find . -name "*.a"
-ls
+make clean
+make -j$(nproc)
+make install
 
 # build fuzzers
 for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
