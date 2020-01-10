@@ -16,12 +16,37 @@
 ################################################################################
 
 # build project
-./autogen.sh --prefix=/opt/local --enable-debug-code
+# libplist
+(
+cd libplist
+./autogen.sh --without-cython --enable-debug
 make
 sudo make install
-# ./autogen.sh --without-cython --enable-debug
-# make -j$(nproc) clean
-# make -j$(nproc) all
+)
+
+#libusbmuxd
+(
+cd libusbmuxd
+./autogen.sh --without-cython --enable-debug
+make
+sudo make install
+)
+
+#gnutls
+(
+cd gnutls
+./bootstrap
+./configure
+make
+make check
+)
+
+#libimobiledevice
+cd libimobiledevice
+./autogen.sh --disable-openssl
+sudo make install
+
+find . -name "*.a"
 
 # build fuzzers
 # e.g.

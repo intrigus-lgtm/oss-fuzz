@@ -16,8 +16,10 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER nikias@gmx.li
-RUN apt-get update && apt-get install -y make autoconf automake libtool pkg-config
-RUN git clone --depth 1 https://github.com/libimobiledevice/libimobiledevice
-WORKDIR libimobiledevice
-COPY build.sh $SRC/
-COPY *.c *.h $SRC/
+RUN apt-get update && apt-get install -y make autoconf automake libtool pkg-config sudo python mercurial autogen autopoint gperf bison texinfo curl gettext gengetopt wget
+RUN git clone --depth 1 https://github.com/libimobiledevice/libimobiledevice libimobiledevice
+RUN git clone --depth 1 https://github.com/libimobiledevice/libplist.git libplist
+RUN git clone --depth 1 https://github.com/libimobiledevice/libusbmuxd.git libusbmuxd
+RUN git clone --depth 1 https://gitlab.com/gnutls/gnutls.git gnutls
+WORKDIR $SRC/
+COPY build.sh *.c *.h $SRC/
