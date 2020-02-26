@@ -1,0 +1,10 @@
+homepage: "https://github.com/rdkit/rdkit"
+primary_contact: "greg.landrum@gmail.com"
+sanitizers:
+  - address
+  - memory
+  - undefined
+  - dataflow
+architectures:
+  - x86_64
+  - i386
