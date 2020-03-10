@@ -17,7 +17,12 @@
 #include <Alembic/AbcGeom/All.h>
 #include <Alembic/AbcMaterial/All.h>
 
-#include "fuzzer_temp_file.h"
+#include <err.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 using Alembic::AbcCoreAbstract::PropertyHeader;
 using Alembic::AbcCoreAbstract::PropertyType;
@@ -154,9 +159,6 @@ void printCurvesAttributes(const ICurvesSchema& schema) {
         const PropertyHeader& headerGeo = geoParam.getPropertyHeader(g);
         const std::string& nameGeo = headerGeo.getName();
         std::cout << "    arbGeomParam[" << g << "] name: " << nameGeo << "\n";
-        // TODO(jchernobieff):
-        // Getting the sample count here is more involved, should it be done
-        // for this test?
       }
     }
   }
@@ -285,8 +287,78 @@ void printInfo(const char* file) {
 
   if (fileValid) {
     std::cout << "file name: " << archive.getName() << "\n";
-    printNodes(archive.getTop());
+    // printNodes(archive.getTop());
   }
+}
+
+int ignore_stdout(void) {
+  int fd = open("/dev/null", O_WRONLY);
+  if (fd == -1) {
+    warn("open(\"/dev/null\") failed");
+    return -1;
+  }
+
+  int ret = 0;
+  if (dup2(fd, STDOUT_FILENO) == -1) {
+    warn("failed to redirect stdout to /dev/null\n");
+    ret = -1;
+  }
+
+  if (close(fd) == -1) {
+    warn("close");
+    ret = -1;
+  }
+
+  return ret;
+}
+
+int delete_file(const char *pathname) {
+  int ret = unlink(pathname);
+  if (ret == -1) {
+    warn("failed to delete \"%s\"", pathname);
+  }
+
+  free((void *)pathname);
+
+  return ret;
+}
+
+char *buf_to_file(const uint8_t *buf, size_t size) {
+  char *pathname = strdup("/dev/shm/fuzz-XXXXXX");
+  if (pathname == nullptr) {
+    return nullptr;
+  }
+
+  int fd = mkstemp(pathname);
+  if (fd == -1) {
+    warn("mkstemp(\"%s\")", pathname);
+    free(pathname);
+    return nullptr;
+  }
+
+  size_t pos = 0;
+  while (pos < size) {
+    int nbytes = write(fd, &buf[pos], size - pos);
+    if (nbytes <= 0) {
+      if (nbytes == -1 && errno == EINTR) {
+        continue;
+      }
+      warn("write");
+      goto err;
+    }
+    pos += nbytes;
+  }
+
+  if (close(fd) == -1) {
+    warn("close");
+    goto err;
+  }
+
+  return pathname;
+
+err:
+  delete_file(pathname);
+  return nullptr;
 }
 
 static bool initialized = false;

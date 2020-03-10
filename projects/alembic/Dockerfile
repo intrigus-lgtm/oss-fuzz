@@ -16,7 +16,19 @@
 
 FROM gcr.io/oss-fuzz-base/base-builder
 MAINTAINER miller.lucas@gmail.com
-RUN apt-get update && apt-get install -y build-essential python cmake make automake openexr openexr-viewers libopenexr-dev libilmbase-dev
-RUN git clone --depth 1 https://github.com/alembic/alembic alembic
-WORKDIR alembic
-COPY build.sh alembic_fuzzer.cc *.h $SRC/
+
+RUN apt-get update && apt-get install -y build-essential zlib1g-dev python make openexr automake openexr-viewers libopenexr-dev libilmbase-dev wget
+
+# Install cmake version 3.14
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.sh; \
+    chmod +x cmake-3.14.5-Linux-x86_64.sh; \
+    ./cmake-3.14.5-Linux-x86_64.sh --skip-license --prefix="/usr/local"
+
+# Install OpenEXR
+RUN wget http://download.savannah.nongnu.org/releases/openexr/ilmbase-2.2.0.tar.gz
+RUN tar xvfz ilmbase-2.2.0.tar.gz && cd ilmbase-2.2.0 && ./configure && make -j6 install
+RUN git clone --depth 1 https://github.com/AcademySoftwareFoundation/openexr.git
+
+RUN git clone --depth 1 https://github.com/alembic/alembic
+# WORKDIR alembic
+COPY build.sh *.h *.cc $SRC/

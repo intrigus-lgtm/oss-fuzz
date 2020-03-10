@@ -16,18 +16,57 @@
 ################################################################################
 
 # build project
+# cd ..
+
+# build openexr for alembic
+cd openexr
+cmake .
+make -j$(nproc)
+make install
+cd ..
+
+# build alembic
+cd alembic
 mkdir build
 cd build
-cmake .. -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR=/usr/include/OpenEXR2 -DILMBASE_ROOT=/usr/lib64/OpenEXR2
-
+cmake .. -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR=/usr/local/include/OpenEXR \
+-DILMBASE_ROOT=/usr/local/lib64
 make clean
 make -j$(nproc)
 make install
-
+# cd ../..
+# cd include/OpenEXR
+ls
 # build fuzzers
+# for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
+#   fuzz_basename=$(basename -s .cc $fuzzers)
+#   $CXX $CXXFLAGS -std=c++11 -Iinclude/ -I /usr/local/include/OpenEXR \
+#   $fuzzers $LIB_FUZZING_ENGINE ./lib/Alembic/libAlembic.a \
+#   -o $OUT/$fuzz_basename
+# done
+
+# Build dependencies
+# export ALM_DEPS_PATH=$SRC/alm_deps
+# mkdir -p $ALM_DEPS_PATH
+
+# cd $SRC/openexr
+# cmake . -DCMAKE_INSTALL_PREFIX=="$ALM_DEPS_PATH"
+# make clean
+# make -j$(nproc)
+# make install
+
+# cd /src/alm_deps
+# ls
+
+# cd $SRC/alembic
+# cmake -DALEMBIC_SHARED_LIBS=OFF -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR="$ALM_DEPS_PATH" \
+# -DILMBASE_ROOT="ALM_DEPS_PATH"
+# make -j$(nproc) clean
+# make -j$(nproc) all
+
 for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
   fuzz_basename=$(basename -s .cc $fuzzers)
-  $CXX $CXXFLAGS -std=c++11 -I. -Ilib \
-  $fuzzers $LIB_FUZZING_ENGINE ./lib/Alembic/libAlembic.a \
+  $CXX $CXXFLAGS -std=c++11 $fuzzers ./src/lib/libAlembic.a \
+  $LIB_FUZZING_ENGINE  \
   -o $OUT/$fuzz_basename
 done
