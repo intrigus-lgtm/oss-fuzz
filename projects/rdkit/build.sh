@@ -16,19 +16,11 @@
 ################################################################################
 
 # build project
-cd rdkit
-mkdir -p build && cd build
-cmake \
-    -DRDK_INSTALL_INTREE=OFF \
-    -DRDK_BUILD_INCHI_SUPPORT=ON \
-    -DRDK_BUILD_AVALON_SUPPORT=ON \
-    -DRDK_BUILD_PYTHON_WRAPPERS=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DPYTHON_EXECUTABLE=/usr/bin/python3.6 \
-    -DBOOST_ROOT=/usr \
-    ../
+mkdir -p build
+cd build
+which python3
+cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
 make -j3 .. install
-make ctest -j3
 
 # build fuzzers
 # e.g.
