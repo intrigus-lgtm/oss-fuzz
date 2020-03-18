@@ -18,9 +18,8 @@
 # build project
 mkdir -p build
 cd build
-which python3
 cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
-make -j3 .. install
+make -j4 install
 
 # build fuzzers
 # e.g.

@@ -20,19 +20,22 @@ MAINTAINER greg.landrum@gmail.com
 RUN apt-get update && apt-get upgrade -y && apt install -y \
   curl \
   wget \
-  cmake \
-  make \
   libboost-all-dev \
+  cmake \
+  git \
+  g++ \
+  make \
+  libeigen3-dev \
+  python3 \
+  libpython3-all-dev \
+  python3-numpy \
+  python3-pip \
   python3-pil \
   python3-pandas \
-  libpython3-all-dev \
-  python3 \
-  python3-numpy \
-  libeigen3-dev \
-  python3-pip python3-dev \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip
+
 
 # Install latest cmake.
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.sh; \
