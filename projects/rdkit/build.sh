@@ -18,8 +18,9 @@
 # build project
 mkdir -p build
 cd build
-cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
-make -j4 install
+cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 -DBOOST_ROOT=/usr/include/boost ..
+make clean
+make -j$(nproc)
 
 # build fuzzers
 # e.g.
