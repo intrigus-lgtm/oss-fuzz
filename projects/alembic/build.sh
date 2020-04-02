@@ -1,5 +1,5 @@
 #!/bin/bash -eu
-# Copyright 2019 Google Inc.
+# Copyright 2020 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 ################################################################################
 
 # build project
-# cd ..
 
 # build openexr for alembic
 cd openexr
@@ -34,29 +33,8 @@ cmake .. -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR=/usr/local/include/Open
 make clean
 make -j$(nproc)
 make install
-# cd ../..
-# cd include/OpenEXR
-ls
-# build fuzzers
-# for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
-#   fuzz_basename=$(basename -s .cc $fuzzers)
-#   $CXX $CXXFLAGS -std=c++11 -Iinclude/ -I /usr/local/include/OpenEXR \
-#   $fuzzers $LIB_FUZZING_ENGINE ./lib/Alembic/libAlembic.a \
-#   -o $OUT/$fuzz_basename
-# done
 
-# Build dependencies
-# export ALM_DEPS_PATH=$SRC/alm_deps
-# mkdir -p $ALM_DEPS_PATH
-
-# cd $SRC/openexr
-# cmake . -DCMAKE_INSTALL_PREFIX=="$ALM_DEPS_PATH"
-# make clean
-# make -j$(nproc)
-# make install
-
-# cd /src/alm_deps
-# ls
+find . -name "*.a"
 
 # cd $SRC/alembic
 # cmake -DALEMBIC_SHARED_LIBS=OFF -DALEMBIC_SHARED_LIBS=OFF -DILMBASE_INCLUDE_DIR="$ALM_DEPS_PATH" \
@@ -66,7 +44,7 @@ ls
 
 for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
   fuzz_basename=$(basename -s .cc $fuzzers)
-  $CXX $CXXFLAGS -std=c++11 $fuzzers ./src/lib/libAlembic.a \
+  $CXX $CXXFLAGS -std=c++11 $fuzzers ./lib/Alembic/libAlembic.a \
   $LIB_FUZZING_ENGINE  \
   -o $OUT/$fuzz_basename
 done
