@@ -28,8 +28,6 @@ find . -name "*_static.a"
 for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
   fuzz_basename=$(basename -s .cc $fuzzers)
   $CXX $CXXFLAGS -std=c++11 -I. -I/src/rdkit/Code \
-  $fuzzers $LIB_FUZZING_ENGINE \
+  $fuzzers $LIB_FUZZING_ENGINE ./Code/GraphMol/FileParsers/libRDKitFileParsers_static.a \
   -o $OUT/$fuzz_basename
 done
-
-# ./Code/GraphMol/FileParsers/libRDKitFileParsers_static.a
