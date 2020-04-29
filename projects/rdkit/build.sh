@@ -20,14 +20,17 @@ mkdir -p build
 cd build
 cmake -DRDK_BUILD_PYTHON_WRAPPERS=OFF -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
 make clean
-make -j$(nproc)
+make -j$(nproc) install
 
-find . -name "*_static.a"
+# find . -name "*_static.a"
 
 # build fuzzers
 for fuzzers in $(find $SRC -name '*_fuzzer.cc'); do
   fuzz_basename=$(basename -s .cc $fuzzers)
   $CXX $CXXFLAGS -std=c++11 -I. -I/src/rdkit/Code \
+  -L/src/rdkit/lib -lRDKitFileParsers_static -lRDKitDepictor_static \
+  -lRDKitSmilesParse_static -lRDKitGraphMol_static -lRDKitRDGeometryLib_static \
+  -lRDKitRingDecomposerLib -lRDKitDataStructs_static -lRDKitRDGeneral_static -lpthread \
   $fuzzers $LIB_FUZZING_ENGINE ./Code/GraphMol/FileParsers/libRDKitFileParsers_static.a \
   -o $OUT/$fuzz_basename
 done
